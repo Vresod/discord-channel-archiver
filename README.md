@@ -10,3 +10,6 @@ It uses discord.py & a bot to archive said channel
 
 ## how do I run it?
 `python main.py [channel ID]`
+
+## what does it do
+fuck if i know
