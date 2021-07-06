@@ -33,13 +33,13 @@ def dump_json_at_end():
 	oldest_snowflake:int = 0
 	LIMIT = 100
 	while True:
-		now = datetime.now()
-		time = now.strftime("%H:%M:%S")
+		time = datetime.now().strftime("%H:%M:%S")
 		current_messages:list = request_endpoint(f'/channels/{channel}/messages?limit={LIMIT}&{"before=" + oldest_snowflake if oldest_snowflake else ""}')
 		for message in current_messages:
 			temp_message = {}
 			for i in WANTED_ATTRS:
 				temp_message[i] = message.get(i)
+			messages.append(temp_message)
 			print(f"[{time}] <{message['author']['username']}#{message['author']['discriminator']}>: {message['content']}")
 			oldest_snowflake = message['id']
 		if len(current_messages) != LIMIT:
@@ -53,6 +53,7 @@ def dump_json_for_each():
 	with open('dump.json','w') as dumpfile: dumpfile.write('[')
 	dumpfile = open('dump.json','a')
 	while True:
+		time = datetime.now().strftime("%H:%M:%S")
 		messages = []
 		current_messages:list = request_endpoint(f'/channels/{channel}/messages?limit={LIMIT}&{"before=" + oldest_snowflake if oldest_snowflake else ""}')
 		for message in current_messages:
@@ -60,6 +61,7 @@ def dump_json_for_each():
 			for i in WANTED_ATTRS:
 				temp_message[i] = message.get(i)
 			messages.append(temp_message)
+			print(f"[{time}] <{message['author']['username']}#{message['author']['discriminator']}>: {message['content']}")
 		for message in messages:
 			dumpfile.write(json.dumps(message))
 			if message != messages[-1]: dumpfile.write(',')
@@ -76,6 +78,7 @@ if __name__ == "__main__":
 	except ValueError:
 		print('No channel provided, exiting program')
 		exit(1)
+	print(f"Dumping channel #{request_endpoint(f'/channels/{channel}')['name']}")
 	if config['DUMP_AT_END'] == 'True':
 		dump_json_at_end()
 	else:
