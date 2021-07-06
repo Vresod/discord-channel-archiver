@@ -10,7 +10,7 @@ config = {
 	**dotenv.dotenv_values('.env'), # then load .env
 }
 
-token = ('Bot ' if config['BOT'] else '') + config['TOKEN']
+token = ('Bot ' if config['BOT']  != 'False' else '') + config['TOKEN']
 
 config['BOT'] = True if config['TOKEN'].startswith('Bot ') else config['BOT']
 
@@ -32,4 +32,19 @@ if __name__ == "__main__":
 	except ValueError:
 		print('No channel provided, exiting program')
 		exit(1)
-	print(channel)
+	messages = []
+	oldest_snowflake:int = 0
+	LIMIT = 100
+	wanted_attrs = {'content','author','id','timestamp','edited_timestamp','attachments','embeds','reactions','pinned','type','referenced_message'}
+	while True:
+		current_messages:list = request_endpoint(f'/channels/{channel}/messages?limit={LIMIT}&{"before=" + oldest_snowflake if oldest_snowflake else ""}')
+		for message in current_messages:
+			temp_message = {}
+			for i in wanted_attrs:
+				temp_message[i] = message.get(i)
+			messages.append(temp_message)
+			oldest_snowflake = message['id']
+		if len(current_messages) != LIMIT:
+			break
+	messages.reverse()
+	with open("dump.json","w") as dumpfile: json.dump(messages,dumpfile)
