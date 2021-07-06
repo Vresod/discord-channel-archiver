@@ -45,7 +45,7 @@ if __name__ == "__main__":
 			temp_message = {}
 			for i in wanted_attrs:
 				temp_message[i] = message.get(i)
-			print(f"[{time}] Message to be archived: {message['content']}")
+			print(f"[{time}] <{message['author']['username']}#{message['author']['discriminator']}>: {message['content']}")
 			oldest_snowflake = message['id']
 		if len(current_messages) != LIMIT:
 			break
