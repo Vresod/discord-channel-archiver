@@ -1,37 +1,39 @@
 import json
 import requests
-import dotenv
-from datetime import datetime
-from extra import RequestType
+import dotenv # allows a convenient config format
+from datetime import datetime # needed for verbosity
+from extra import RequestType # enum for requests
 
-from sys import argv as args
+from sys import argv as args # arguments
 
+# dotenv config
 config = {
-	**dotenv.dotenv_values('example.env'), # first load example.env,
-	**dotenv.dotenv_values('.env'), # then load .env
+	**dotenv.dotenv_values('example.env'),
+	**dotenv.dotenv_values('.env'),
 }
 
+# bot tokens require "Bot " before them
 token = ('Bot ' if config['BOT']  != 'False' else '') + config['TOKEN']
 
-config['BOT'] = True if config['TOKEN'].startswith('Bot ') else config['BOT']
-
+# startpoint, as in before endpoint
 STARTPOINT = "https://discord.com/api/v9"
 
+# stuff we don't throw away about the messages
 WANTED_ATTRS = {'content','author','id','timestamp','edited_timestamp','attachments','embeds','reactions','pinned','type','referenced_message'}
-LIMIT = 100
+LIMIT = 100 # amount of messages grabbed per request
 
 def request_endpoint(endpoint,method:RequestType=RequestType.GET,data:dict={}):
 	"""
-	gets an endpoint in form "/users/@me"
+	gets an endpoint in form "/users/@me". only GET and POST are supported
 	"""
 	if method == RequestType.GET: return json.loads(requests.get(STARTPOINT + endpoint,headers={'Authorization':token}).text)
 	elif method == RequestType.POST: return json.loads(requests.post(STARTPOINT + endpoint,headers={'Authorization':token},data=data).text)
+	# only GET and POST are supported
 	else: raise ValueError(f'Unsupported method {method.name!r}')
 
 def dump_json_at_end():
 	messages = []
 	oldest_snowflake:int = 0
-	LIMIT = 100
 	while True:
 		time = datetime.now().strftime("%H:%M:%S")
 		current_messages:list = request_endpoint(f'/channels/{channel}/messages?limit={LIMIT}&{"before=" + oldest_snowflake if oldest_snowflake else ""}')
@@ -48,7 +50,6 @@ def dump_json_at_end():
 	with open("dump.json","w") as dumpfile: json.dump(messages,dumpfile)
 
 def dump_json_for_each():
-	WANTED_ATTRS = {'content','author','id','timestamp','edited_timestamp','attachments','embeds','reactions','pinned','type','referenced_message'}
 	oldest_snowflake:int = 0
 	with open('dump.json','w') as dumpfile: dumpfile.write('[')
 	dumpfile = open('dump.json','a')
