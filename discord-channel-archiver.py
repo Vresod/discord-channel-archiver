@@ -27,7 +27,8 @@ token = ('Bot ' if config['BOT']  != 'False' else '') + config['TOKEN']
 if __name__ == "__main__":
 	request_endpoint = RequestClass(token)
 	user = request_endpoint("/users/@me")
-	print(f'Logged in as {user.get("username")}#{user.get("discriminator")} to {config["FILENAME"]}')
+	print(f'Logged in as {user.get("username")}#{user.get("discriminator")}')
 	channel = config['channel']
-	print(f"Dumping channel #{request_endpoint(f'/channels/{channel}')['name']}") # tell the user what channel they're dumping by name, to make sure they got the correct one. also nested f-strings lol
+	name = request_endpoint(f'/channels/{channel}').get('name')
+	print(f"Dumping channel {('#' + name) if name else channel} to {config['FILENAME']}") # tell the user what channel they're dumping by name, to make sure they got the correct one. also nested f-strings lol
 	dump_json(channel,config['FILENAME'],config,request_endpoint)

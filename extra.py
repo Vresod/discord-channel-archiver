@@ -43,8 +43,8 @@ def dump_json(channel:Union[int,str],filename:PathLike,config:dict,request_endpo
 	oldest_snowflake:int = 0
 	dump_at_end = config['DUMP_AT_END'] == 'True' # str -> bool
 	file_mode = 'w' if dump_at_end else 'a' # write if dump at end, else append
-	with open('dump.json','w') as dumpfile: dumpfile.write('[' if not dump_at_end else '') # make the file and be sure its empty
-	dumpfile = open('dump.json',file_mode)
+	with open(filename,'w') as dumpfile: dumpfile.write('[' if not dump_at_end else '') # make the file and be sure its empty
+	dumpfile = open(filename,file_mode)
 	messages = []
 	while True:
 		time = datetime.now().strftime("%H:%M:%S")
