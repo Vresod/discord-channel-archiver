@@ -5,9 +5,13 @@ from os import PathLike
 import requests
 import json
 
-STARTPOINT = "https://discord.com/api/v9"
-
 __all__ = ['RequestType','RequestClass','dump_json']
+
+STARTPOINT = "https://discord.com/api/v9"
+# stuff we don't throw away about the messages
+WANTED_ATTRS = {'content','author','id','timestamp','edited_timestamp','attachments','embeds','reactions','pinned','type','referenced_message'}
+LIMIT = 100 # amount of messages grabbed per request
+
 
 class RequestType(IntEnum): # make an enum of request types; this probably already exists in requests but i couldn't find it
 	GET = 1
@@ -32,7 +36,7 @@ class RequestClass:
 		else: raise ValueError(f'Unsupported method {method.name!r}')
 
 
-def dump_json(channel:Union[int,str],filename:PathLike,config:dict,LIMIT,WANTED_ATTRS,request_endpoint:RequestClass):
+def dump_json(channel:Union[int,str],filename:PathLike,config:dict,request_endpoint:RequestClass):
 	"""
 	dumps every message in a discord channel to filename
 	"""
