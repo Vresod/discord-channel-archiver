@@ -7,7 +7,7 @@ parser = argparse.ArgumentParser(description='Archive discord channels')
 parser.add_argument("channel",help="channel to be archived",type=int)
 parser.add_argument("--token",'-t',help="token to be used",dest="TOKEN")
 parser.add_argument("--bot",'-b',help="whether the token is that of a bot",action='store_true',dest="BOT")
-parser.add_argument("--filename",'-f',help="whether",dest="FILENAME")
+parser.add_argument("--filename",'-f',help="file that gets written to",dest="FILENAME")
 
 args = vars(parser.parse_args())
 
