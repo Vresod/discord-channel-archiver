@@ -36,7 +36,7 @@ class RequestClass:
 		else: raise ValueError(f'Unsupported method {method.name!r}')
 
 
-def dump_json(channel:Union[int,str],filename:PathLike,config:dict,request_endpoint:RequestClass):
+def dump_json(channel:Union[int,str],filename:PathLike,config:dict,request_endpoint:RequestClass,quiet:bool):
 	"""
 	dumps every message in a discord channel to filename
 	"""
@@ -55,8 +55,10 @@ def dump_json(channel:Union[int,str],filename:PathLike,config:dict,request_endpo
 			for i in WANTED_ATTRS:
 				temp_message[i] = message.get(i)
 			messages.append(temp_message)
+			oldest_snowflake = message['id']
+			if quiet: continue
 			print(f"[{time}] <{message['author']['username']}#{message['author']['discriminator']}>: {message['content']}") # print in format "[00:00:00] <DiscordUser#0001> Sample text"
-		# do weird lower-level json shenanigans if dump at end
+		# do weird lower-level json shenanigans if not dump at end
 		if not dump_at_end:
 			for message in messages:
 				dumpfile.write(json.dumps(message))
