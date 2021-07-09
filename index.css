@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+* {
+	background-color: #36393f;
+	color: #dcddde;
+	font-family: 'Noto Sans',"Helvetica Neue",Helvetica,Arial,sans-serif
+}
+
+.message-content {
+	font-size: 1rem;
+	line-height: 1.375rem;
+	font-weight: 400;
+	white-space: break-spaces;
+	word-wrap: break-word;
+}
