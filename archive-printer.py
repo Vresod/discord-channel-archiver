@@ -12,3 +12,4 @@ messages.sort(key=lambda msg: int(msg['id']))
 for message in messages:
 	time = datetime.fromtimestamp(((int(message['id'])>> 22) + 1420070400000) / 1000).strftime("%x %X")
 	print(f"[{time}] <{message['author']['username']}#{message['author']['discriminator']}>: {message['content']}") # print in a format that changes depending on your region
+	[print(i['url']) for i in message['attachments']]

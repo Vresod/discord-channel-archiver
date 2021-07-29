@@ -1,6 +1,5 @@
 import dotenv # allows a convenient config format
-from extra import RequestClass
-from extra import dump_json 
+from extra import *
 import argparse
 
 parser = argparse.ArgumentParser(description='Archive discord channels')
@@ -22,15 +21,16 @@ config = {
 	**args
 }
 
+config = {k:v if v not in ('True','False') else v=='True' for k,v in config.items()}
+
 # bot tokens require "Bot " before them
-token = ('Bot ' if config['BOT']  != 'False' else '') + config['TOKEN']
-print(token)
+token = ('Bot ' if config['BOT'] else '') + config['TOKEN']
 
 if __name__ == "__main__":
 	request_endpoint = RequestClass(token)
 	user = request_endpoint("/users/@me")
-	print(f'Logged in as {user.get("username")}#{user.get("discriminator")}')
+	print(f'Logged in as {user["username"]}#{user["discriminator"]}')
 	channel = config['channel']
 	name = request_endpoint(f'/channels/{channel}').get('name')
 	print(f"Dumping channel {('#' + name) if name else channel} to {config['FILENAME']}") # tell the user what channel they're dumping by name, to make sure they got the correct one. also nested f-strings lol
-	dump_json(channel,config['FILENAME'],config,request_endpoint,config['QUIET'])
+	dump_json(channel,config,request_endpoint)
